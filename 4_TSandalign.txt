@@ -1,0 +1,31 @@
+Stackname="ST003";
+print("start");
+stackfactor=40;
+Dialog.create("Enter maximum number of frames");
+Dialog.addNumber("max frames:",119998);
+Dialog.show();
+frametot=Dialog.getNumber();
+frameno=frametot/stackfactor;
+fend=0;
+visstat="imleft=0 imtop=0 imwidth=256 imheight=256 renderer=[Averaged shifted histograms] magnification=16 shifts=4 colorize=false threed=false";
+for(i=1; i<stackfactor; i++) {	
+	fstart=fend+1;
+	fend=fstart+frameno;
+	framestat="action=filter formula=[(frame > "+fstart+" & frame < "+fend+")]";
+	run("Show results table", framestat);
+	run("Visualization", visstat);
+	rename("Image"+i);
+	setMinAndMax(0, 160);
+	run("16-bit");
+	//run("Show results table", "action=reset");
+	
+};
+
+framestat="action=filter formula=[(frame > "+(fend+1)+")]";
+run("Show results table", framestat);
+run("Visualization", visstat);
+rename("Image"+(i+1));
+
+run("Images to Stack", "name=Stackname title=Image use");
+run("16-bit");
+print("Done");
